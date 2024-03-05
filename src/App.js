@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import WeatherData from './components/WeatherData/WeatherData';
 import './App.css';
+import io from 'socket.io-client';
 
 const App = () => { //{ onLocationUpdate }
   const [location, setLocation] = useState(null);
@@ -39,33 +41,23 @@ const App = () => { //{ onLocationUpdate }
     }
   };
 
+  const socket = io('http://localhost:5000/api/weather');
+
+  socket.on('connect', () => {
+    console.log('Connected to server');
+  });
+
+  socket.on('weatherUpdate', (data) => {
+    console.log('Received weather update:', data);
+  });
+
+
   return (
-    <div>
+    <div className="main">
       {error && <p>{error}</p>}
-      {location && (
-        <p>
-          Latitude: {location.latitude}, Longitude: {location.longitude}
-        </p>
+      {location && weatherData && (
+        <WeatherData weatherData={weatherData} />
       )}
-      {weatherData && (
-        <div>
-          <h2>Weather</h2>
-          <p>Location: {weatherData.location}</p>
-          <p>Temperature: {weatherData.temperature}°C</p>
-          <p>Conditions: {weatherData.conditions}</p>
-          <p>Sunrise: {weatherData.sunrise}</p>
-          <p>Sunset: {weatherData.sunset}</p>
-          <p>Feels like: {weatherData.feelsLike}°C</p>
-          <p>Pressure: {weatherData.pressure}hPa</p>
-          <p>Minimum: {weatherData.minTemp}°C</p>
-          <p>Maximum: {weatherData.maxTemp}°C</p>
-          <p>Humidity: {weatherData.humidity}%</p>
-          <p>
-            <img src={`https://openweathermap.org/img/wn/${weatherData.icons}@2x.png`} alt={weatherData.conditions} />
-          </p>
-        </div>
-      )}
-      {console.log(weatherData)}
     </div>
   );
 }
