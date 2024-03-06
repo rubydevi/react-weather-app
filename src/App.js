@@ -41,15 +41,21 @@ const App = () => { //{ onLocationUpdate }
     }
   };
 
-  const socket = io('http://localhost:5000/api/weather');
+  useEffect(() => {
+    const socket = io('http://localhost:5000');
 
-  socket.on('connect', () => {
-    console.log('Connected to server');
-  });
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
 
-  socket.on('weatherUpdate', (data) => {
-    console.log('Received weather update:', data);
-  });
+    socket.on('weatherUpdate', (data) => {
+      console.log('Received weather update:', data);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
 
   return (
