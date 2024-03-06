@@ -57,7 +57,6 @@ const App = () => { //{ onLocationUpdate }
     };
   }, []);
 
-
   return (
     <div className="main">
       {error && <p>{error}</p>}
